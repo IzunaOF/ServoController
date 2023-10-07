@@ -1,52 +1,33 @@
 #include <ServoEngine.h>
 
-// Configuração do servo
-const int motorId = 1;     // Identificador do motor
-const int motorPin = 9;    // Pino ao qual o servo está conectado
-const int potPin = A0;     // Pino ao qual o potenciômetro está conectado
-const int minAngle = 0;    // Ângulo mínimo do servo
-const int maxAngle = 180;  // Ângulo máximo do servo
-const int autoPotPin = A1; // Pino ao qual o potenciômetro para a velocidade automatica está conectado
-
 const int changeState = 2;
-
 bool state = false;
 
 // Crie um objeto SvEngine
-SvEngine meuMotor(motorId, motorPin, potPin, 90, minAngle, maxAngle);
+SvEngine myEngine(1, 3, A0, 90);
+SvEngine myEngine2(2, 5, A1, 90, 45, 135);
 
-void setup()
-{
+SvEngine engines[2] = {myEngine, myEngine2};
+void setup(){
   // Inicializa o motor
-  meuMotor.setSignal();                // isso é necessário para que o motor se vincule ao pino de leitura;
-  meuMotor.setAutoSpeedPW(autoPotPin); // define o pino para o movimento automatico, opcional;
-  meuMotor.setSpeed();                 // Configura a velocidade inicial do motor
-  meuMotor.setBoost(5);                // Aumenta a velocidade de movimento, inclua somente se quiser que o motor se torne mais veloz
+  for (size_t i = 0; i < sizeof(engines) / sizeof(engines[0]); i++){
+    engines[i].setSignal();                // isso é necessário para que o motor se vincule ao pino de leitura;
+    engines[i].setAutoSpeedPW(autoPotPin); // define o pino para o movimento automatico, opcional;
+    engines[i].setSpeed();                 // Configura a velocidade inicial do motor
+    engines[i].setBoost(5);                // Aumenta a velocidade de movimento, inclua somente se quiser que o motor se torne mais veloz
+  }
 }
 
-void loop()
-{
+void loop(){
+  // troca o modo de controle do motor
   toggleState();
   if (state)
-    automatico();
+    myEngine.autoMove(newAngle);
   else
-    manual();
+    myEngine.joystick();
 }
 
-void toggleState()
-{
-  state = !state;
-}
-void manual()
-{
-  meuMotor.joystick();
-}
-void automatico()
-{
-  // Lê o valor do potenciômetro para obter o ângulo
-  int potValue = analogRead(autoPotPin);
-  int angle = map(potValue, 0, 1023, minAngle, maxAngle); // Mapeia o valor para o intervalo de ângulos do servo
-
-  // Move o servo para o ângulo calculado
-  meuMotor.autoMove(angle);
+void toggleState(){
+  if (changeState)
+    state = !state;
 }

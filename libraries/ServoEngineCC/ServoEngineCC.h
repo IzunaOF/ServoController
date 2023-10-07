@@ -48,9 +48,7 @@ public:
   int readAcceleration();
   void setMotorDirection(int pos, int neg);
   void adjustVelocity(bool neutral = true, int acceleration = 0);
-  void writeAngle(int value);
   void performMovement();
   void setEndEngageAngle(int value);
-  void setEngageAngle(int value);
 };
 #endif
