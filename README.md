@@ -130,26 +130,29 @@ _SvRecorder_ Possui alguns comando que podem ser utilizados. Para executar corre
 
 ## Métodos Disponíveis
 
+_Construtor da classe SvRecorder._
+
 ```cpp
-SvRecorder(int recButton, int startRecButton, int executeButton): // Construtor da classe SvRecorder.
-listening(): // Monitora os botões e a lógica de gravação/execução.
-joystick(): // Simula o movimento dos servos durante a gravação.
-recording(): // Realiza o processo de gravação dos movimentos dos servos.
-recordStep(): // Grava um passo do movimento atual.
-executeSequence(): // Executa a sequência de movimento gravada.
-invertAxis(int engineId): // Inverte a direção do movimento para um determinado motor.
-includeServo(SvEngine list[SERVO_LIST_SIZE]): // Inclui a lista de motores para a gravação e execução.
-handleIsRecording(): // Lida com o início e término da gravação.
-swapRecording(): // Alterna entre os modos de gravação e execução.
-isResetMemory(): // Verifica se é necessário redefinir a memória.
-calibrateServos(): // Calibra os servos antes de executar a sequência.
-calibrateEveryRound(bool calibrate): // Define se a calibração dos servos é feita a cada execução.
-setExecuteSequenceState(): // Define o estado de execução da sequência.
-getIsRecord(): // Verifica se está no modo de gravação.
-getIsExecute() const: // Verifica se está no modo de execução.
-getIsRecording() const: // Verifica se está gravando.
-getIsStartRecording() const: // Verifica se o botão de início de gravação foi pressionado.
+SvRecorder(int recButton, int startRecButton, int executeButton)
 ```
+
+- `listening()` : _Monitora os botões e a lógica de gravação/execução._
+- `joystick()` : _Simula o movimento dos servos durante a gravação._
+- `recording()` : _Realiza o processo de gravação dos movimentos dos servos._
+- `recordStep()` : _Grava um passo do movimento atual._
+- `executeSequence()` : _Executa a sequência de movimento gravada._
+- `invertAxis(int engineId)` : _Inverte a direção do movimento para um determinado motor._
+- `includeServo(SvEngine list[SERVO_LIST_SIZE])` : _Inclui a lista de motores para a gravação e execução._
+- `handleIsRecording()`: _Lida com o início e término da gravação._
+- `swapRecording()`: _Alterna entre os modos de gravação e execução._
+- `isResetMemory()`: _Verifica se é necessário redefinir a memória._
+- `calibrateServos()`: _Calibra os servos antes de executar a sequência._
+- `calibrateEveryRound(bool calibrate)` : _Define se a calibração dos servos é feita a cada execução._
+- `setExecuteSequenceState()` : _Define o estado de execução da sequência._
+- `getIsRecord()` : _Verifica se está no modo de gravação._
+- `getIsExecute() const` : _Verifica se está no modo de execução._
+- `getIsRecording() const` : _Verifica se está gravando._
+- `getIsStartRecording() const` : _Verifica se o botão de início de gravação foi pressionado._
 
 ## Exemplo de uso:
 
@@ -211,19 +214,19 @@ _Construtor da classe ServoEngine._
 SvEngine(int engineId, int pin, int pw, int center, int min, int max, int maxRPM = ?, int neutral = ?)
 ```
 
-`joystick()`: _Controla o motor a partir de um joystick ou entrada análoga._
-`autoMove(int newAngle)`: _Move o motor automaticamente para um ângulo específico._
-`calibrate(bool centralize, int angle)`: _Calibra o motor para uma posição central ou um ângulo específico._
-`isMoving() const`: _Verifica se o motor está em movimento._
-`invertAxis()`: _Inverte a direção do movimento do motor._
-`incrementAngle()`: _Incrementa o ângulo do motor._
-`decrementAngle()`: _Decrementa o ângulo do motor._
-`setSpeed()`: _Configura a velocidade do motor._
-`setSignal()`: _Configura o sinal do motor._
-`setBoost(int value)`: _Define um impulso adicional para o motor._
-`setAutoSpeedPW(int autoPW)`: _Configura o autoPWM do motor._
-`setEngineId(int engineId)`: _Define o ID do motor._
-`setComandAutoAcceleration(bool comand)`: _Ativa ou desativa a aceleração automática do motor._
+- `joystick()`: _Controla o motor a partir de um joystick ou entrada análoga._
+- `autoMove(int newAngle)`: _Move o motor automaticamente para um ângulo específico._
+- `calibrate(bool centralize, int angle)`: _Calibra o motor para uma posição central ou um ângulo específico._
+- `isMoving() const`: _Verifica se o motor está em movimento._
+- `invertAxis()`: _Inverte a direção do movimento do motor._
+- `incrementAngle()`: _Incrementa o ângulo do motor._
+- `decrementAngle()`: _Decrementa o ângulo do motor._
+- `setSpeed()`: _Configura a velocidade do motor._
+- `setSignal()`: _Configura o sinal do motor._
+- `setBoost(int value)`: _Define um impulso adicional para o motor._
+- `setAutoSpeedPW(int autoPW)`: _Configura o autoPWM do motor._
+- `setEngineId(int engineId)`: _Define o ID do motor._
+- `setComandAutoAcceleration(bool comand)`: _Ativa ou desativa a aceleração automática do motor._
 
 ### Exemplo de uso:
 
@@ -267,16 +270,21 @@ EngineCC meuCarro(/*parâmetros*/);
 
 ## Métodos Disponíveis
 
-`EngineCC(int enable, int positive, int negative, int potentiometer, int sensibility, int center, int offSet)`: _Construtor da classe EngineCC._
-`setupPins()`: _Configura as pinagens dos motores._
-`setSteeringAngle(bool rotateClockwise, int angle)`: _Define o ângulo de direção do volante._
-`readAcceleration()`: _Lê a aceleração do motor._
-`setMotorDirection(int pos, int neg)`: _Configura a direção do motor._
-`adjustVelocity(bool neutral, int acceleration)`: _Ajusta a velocidade do motor._
-`writeAngle(int value)`: _Escreve um ângulo específico._
-`performMovement()`: _Executa o movimento do carro._
-`setEndEngageAngle(int value)`: _Define o ângulo de engajamento final._
-`setEngageAngle(int value)`: _Define o ângulo de engajamento._
+_Construtor da classe EngineCC._
+
+```cpp
+EngineCC(int enable, int positive, int negative, int potentiometer, int sensibility, int center, int offSet)
+```
+
+- `setupPins()`: _Configura as pinagens dos motores._
+- `setSteeringAngle(bool rotateClockwise, int angle)`: _Define o ângulo de direção do volante._
+- `readAcceleration()`: _Lê a aceleração do motor._
+- `setMotorDirection(int pos, int neg)`: _Configura a direção do motor._
+- `adjustVelocity(bool neutral, int acceleration)`: _Ajusta a velocidade do motor._
+- `writeAngle(int value)`: _Escreve um ângulo específico._
+- `performMovement()`: _Executa o movimento do carro._
+- `setEndEngageAngle(int value)`: _Define o ângulo de engajamento final._
+- `setEngageAngle(int value)`: _Define o ângulo de engajamento._
 
 ### Exemplo de uso:
 
