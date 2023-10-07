@@ -318,6 +318,20 @@ EngineCC(int enable, int positive, int negative, int potentiometer, int sensibil
 ### Exemplo de uso:
 
 ```cpp
+EngineCC(int enable, int positive, int negative, int potentiometer, int sensibility, int center, int offSet)
+```
+
+- `setupPins()`: _Configura as pinagens dos motores._
+- `setSteeringAngle(bool rotateClockwise, int angle)`: _Define o ângulo de direção do volante._
+- `readAcceleration()`: _Lê a aceleração do motor._
+- `setMotorDirection(int pos, int neg)`: _Configura a direção do motor._
+- `adjustVelocity(bool neutral, int acceleration)`: _Ajusta a velocidade do motor._
+- `performMovement()`: _Executa o movimento do carro._
+- `setEndEngageAngle(int value)`: _Define o ângulo de engajamento final._
+
+### Exemplo de uso:
+
+```cpp
 #include <ServoEngineCC.h>
 
 #define speedPin A0
