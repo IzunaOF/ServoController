@@ -35,12 +35,12 @@ O programa lê a entrada do sensor do volante e controla os servos e motores de 
 
 ### Portas analógicas
 
-| Servo  | Nome da Porta  | Pin |
-| :----- | :------------- | :-: |
-| Base   | baseServoPin   | `A0`  |
-| Braço  | bracoServoPin  | `A1`  |
-| Altura | alturaServoPin | `A2`  |
-| Garra  | garraServoPin  | `A3`  |
+| Servo  | Nome da Porta  | Pin  |
+| :----- | :------------- | :--: |
+| Base   | baseServoPin   | `A0` |
+| Braço  | bracoServoPin  | `A1` |
+| Altura | alturaServoPin | `A2` |
+| Garra  | garraServoPin  | `A3` |
 
 ### Portas digitais:
 
@@ -60,14 +60,14 @@ O programa lê a entrada do sensor do volante e controla os servos e motores de 
 
 #### Pinos:
 
-| Nome           | Pin |
-| :------------- | :-: |
-| positivePin    |  6  |
-| negativePin    |  9  |
-| speedPin       | `A0`  |
-| volantPin      | `A1`  |
-| rightEnablePin |  3  |
-| leftEnablePin  |  5  |
+| Nome           | Pin  |
+| :------------- | :--: |
+| positivePin    |  6   |
+| negativePin    |  9   |
+| speedPin       | `A0` |
+| volantPin      | `A1` |
+| rightEnablePin |  3   |
+| leftEnablePin  |  5   |
 
 #### Botões:
 
@@ -130,46 +130,60 @@ _SvRecorder_ Possui alguns comando que podem ser utilizados. Para executar corre
 
 ## Métodos Disponíveis
 
+_Construtor da classe SvRecorder._
+
 ```cpp
-SvRecorder(int recButton, int startRecButton, int executeButton): // Construtor da classe SvRecorder.
-listening(): // Monitora os botões e a lógica de gravação/execução.
-joystick(): // Simula o movimento dos servos durante a gravação.
-recording(): // Realiza o processo de gravação dos movimentos dos servos.
-recordStep(): // Grava um passo do movimento atual.
-executeSequence(): // Executa a sequência de movimento gravada.
-invertAxis(int engineId): // Inverte a direção do movimento para um determinado motor.
-includeServo(SvEngine list[SERVO_LIST_SIZE]): // Inclui a lista de motores para a gravação e execução.
-handleIsRecording(): // Lida com o início e término da gravação.
-swapRecording(): // Alterna entre os modos de gravação e execução.
-isResetMemory(): // Verifica se é necessário redefinir a memória.
-calibrateServos(): // Calibra os servos antes de executar a sequência.
-calibrateEveryRound(bool calibrate): // Define se a calibração dos servos é feita a cada execução.
-setExecuteSequenceState(): // Define o estado de execução da sequência.
-getIsRecord(): // Verifica se está no modo de gravação.
-getIsExecute() const: // Verifica se está no modo de execução.
-getIsRecording() const: // Verifica se está gravando.
-getIsStartRecording() const: // Verifica se o botão de início de gravação foi pressionado.
+SvRecorder(int recButton, int startRecButton, int executeButton)
 ```
+
+- `listening()` : _Monitora os botões e a lógica de gravação/execução._
+- `joystick()` : _Simula o movimento dos servos durante a gravação._
+- `recording()` : _Realiza o processo de gravação dos movimentos dos servos._
+- `recordStep()` : _Grava um passo do movimento atual._
+- `executeSequence()` : _Executa a sequência de movimento gravada._
+- `invertAxis(int engineId)` : _Inverte a direção do movimento para um determinado motor._
+- `includeServo(SvEngine list[SERVO_LIST_SIZE])` : _Inclui a lista de motores para a gravação e execução._
+- `handleIsRecording()`: _Lida com o início e término da gravação._
+- `swapRecording()`: _Alterna entre os modos de gravação e execução._
+- `isResetMemory()`: _Verifica se é necessário redefinir a memória._
+- `calibrateServos()`: _Calibra os servos antes de executar a sequência._
+- `calibrateEveryRound(bool calibrate)` : _Define se a calibração dos servos é feita a cada execução._
+- `setExecuteSequenceState()` : _Define o estado de execução da sequência._
+- `getIsRecord()` : _Verifica se está no modo de gravação._
+- `getIsExecute() const` : _Verifica se está no modo de execução._
+- `getIsRecording() const` : _Verifica se está gravando._
+- `getIsStartRecording() const` : _Verifica se o botão de início de gravação foi pressionado._
 
 ## Exemplo de uso:
 
 ```cpp
-#include "ServoRecorder.h"
-#include "ServoEngine.h"
+#include <ServoEngine.h>
+#include <ServoRecorder.h>
 
-SvRecorder recorder(BTN_RECORD, BTN_START_RECORD, BTN_EXECUTE);
+#define BTN_START_RECORD 2
+#define BTN_RECORD 12
+#define BTN_EXECUTE 7
 
-//Utilize o valor Interno da classe SERVO_LIST_SIZE para garantir o tamanho correto da lista dos motores
+SvRecorder rec(BTN_RECORD, BTN_START_RECORD, BTN_EXECUTE);
 
-SvEngine servos[recorder.SERVO_LIST_SIZE];  // Crie um array de objetos da classe SvEngine com os servos desejados
+void setup()
+{
+  SvEngine base(1, 3, A0);
+  SvEngine braco(2, 5, A1);
+  SvEngine altura(3, 6, A2);
+  SvEngine garra(4, 9, A3, 90, 30, 150);
 
-void setup() {
-  // Inicializações
-  recorder.includeServo(servos);  // Inclui os servos no gravador
+  SvEngine servos[rec.SERVO_LIST_SIZE] = {braco, altura, base, garra};
+
+  garra.setBoost(5);
+
+  rec.includeServo(servos);
+  rec.calibrateEveryRound(true);
+  rec.invertAxis(2);
+  rec.invertAxis(3);
 }
-
-void loop() {
-  recorder.listening();  // Monitora os botões e executa a lógica de gravação e execução
+void loop(){
+  rec.listening();
 }
 ```
 
@@ -211,35 +225,55 @@ _Construtor da classe ServoEngine._
 SvEngine(int engineId, int pin, int pw, int center, int min, int max, int maxRPM = ?, int neutral = ?)
 ```
 
-`joystick()`: _Controla o motor a partir de um joystick ou entrada análoga._
-`autoMove(int newAngle)`: _Move o motor automaticamente para um ângulo específico._
-`calibrate(bool centralize, int angle)`: _Calibra o motor para uma posição central ou um ângulo específico._
-`isMoving() const`: _Verifica se o motor está em movimento._
-`invertAxis()`: _Inverte a direção do movimento do motor._
-`incrementAngle()`: _Incrementa o ângulo do motor._
-`decrementAngle()`: _Decrementa o ângulo do motor._
-`setSpeed()`: _Configura a velocidade do motor._
-`setSignal()`: _Configura o sinal do motor._
-`setBoost(int value)`: _Define um impulso adicional para o motor._
-`setAutoSpeedPW(int autoPW)`: _Configura o autoPWM do motor._
-`setEngineId(int engineId)`: _Define o ID do motor._
-`setComandAutoAcceleration(bool comand)`: _Ativa ou desativa a aceleração automática do motor._
+- `joystick()`: _Controla o motor a partir de um joystick ou entrada análoga._
+- `autoMove(int newAngle)`: _Move o motor automaticamente para um ângulo específico._
+- `calibrate(bool centralize, int angle)`: _Calibra o motor para uma posição central ou um ângulo específico._
+- `isMoving() const`: _Verifica se o motor está em movimento._
+- `invertAxis()`: _Inverte a direção do movimento do motor._
+- `incrementAngle()`: _Incrementa o ângulo do motor._
+- `decrementAngle()`: _Decrementa o ângulo do motor._
+- `setSpeed()`: _Configura a velocidade do motor._
+- `setSignal()`: _Configura o sinal do motor._
+- `setBoost(int value)`: _Define um impulso adicional para o motor._
+- `setAutoSpeedPW(int autoPW)`: _Configura o autoPWM do motor._
+- `setEngineId(int engineId)`: _Define o ID do motor._
+- `setComandAutoAcceleration(bool comand)`: _Ativa ou desativa a aceleração automática do motor._
 
 ### Exemplo de uso:
 
 ```cpp
-Copy code
-#include "ServoEngine.h"
+#include <ServoEngine.h>
 
-SvEngine meuMotor(1, 9, A0, 90, 0, 180);
+const int changeState = 2;
+bool state = false;
 
-void setup() {
-  // Inicializações
+// Crie um objeto SvEngine
+SvEngine myEngine(1, 3, A0, 90);
+SvEngine myEngine2(2, 5, A1, 90, 45, 135);
+
+SvEngine engines[2] = {myEngine, myEngine2};
+void setup(){
+  // Inicializa o motor
+  for (size_t i = 0; i < sizeof(engines) / sizeof(engines[0]); i++){
+    engines[i].setSignal();                // isso é necessário para que o motor se vincule ao pino de leitura;
+    engines[i].setAutoSpeedPW(autoPotPin); // define o pino para o movimento automatico, opcional;
+    engines[i].setSpeed();                 // Configura a velocidade inicial do motor
+    engines[i].setBoost(5);                // Aumenta a velocidade de movimento, inclua somente se quiser que o motor se torne mais veloz
+  }
 }
 
-void loop() {
-  // Controle do motor
-  meuMotor.joystick();
+void loop(){
+  // troca o modo de controle do motor
+  toggleState();
+  if (state)
+    myEngine.autoMove(newAngle);
+  else
+    myEngine.joystick();
+}
+
+void toggleState(){
+  if (changeState)
+    state = !state;
 }
 ```
 
@@ -267,33 +301,72 @@ EngineCC meuCarro(/*parâmetros*/);
 
 ## Métodos Disponíveis
 
-`EngineCC(int enable, int positive, int negative, int potentiometer, int sensibility, int center, int offSet)`: _Construtor da classe EngineCC._
-`setupPins()`: _Configura as pinagens dos motores._
-`setSteeringAngle(bool rotateClockwise, int angle)`: _Define o ângulo de direção do volante._
-`readAcceleration()`: _Lê a aceleração do motor._
-`setMotorDirection(int pos, int neg)`: _Configura a direção do motor._
-`adjustVelocity(bool neutral, int acceleration)`: _Ajusta a velocidade do motor._
-`writeAngle(int value)`: _Escreve um ângulo específico._
-`performMovement()`: _Executa o movimento do carro._
-`setEndEngageAngle(int value)`: _Define o ângulo de engajamento final._
-`setEngageAngle(int value)`: _Define o ângulo de engajamento._
+_Construtor da classe EngineCC._
+
+```cpp
+EngineCC(int enable, int positive, int negative, int potentiometer, int sensibility, int center, int offSet)
+```
+
+- `setupPins()`: _Configura as pinagens dos motores._
+- `setSteeringAngle(bool rotateClockwise, int angle)`: _Define o ângulo de direção do volante._
+- `readAcceleration()`: _Lê a aceleração do motor._
+- `setMotorDirection(int pos, int neg)`: _Configura a direção do motor._
+- `adjustVelocity(bool neutral, int acceleration)`: _Ajusta a velocidade do motor._
+- `performMovement()`: _Executa o movimento do carro._
+- `setEndEngageAngle(int value)`: _Define o ângulo de engajamento final._
 
 ### Exemplo de uso:
 
 ```cpp
-#include "ServoEngineCC.h"
+#include <ServoEngineCC.h>
 
-EngineCC meuCarro(9, 10, 11, A0, 50);
+#define speedPin A0
+#define volantPin A1
+#define rightEnablePin 3
+#define leftEnablePin 5
+#define positivePin 6
+#define negativePin 9
 
-void setup() {
-  // Inicializações
+const int CENTER = 512
+const int SENSITIVITY = 50;
+
+// Defina o ponto em que o motor começara o movimento.
+const int MIN_VOLANT_DIRECTION = CENTER - SENSITIVITY;
+const int MAX_VOLANT_DIRECTION = CENTER + SENSITIVITY;
+
+// Crie os objetos
+EngineCC rightEngine(rightEnablePin, positivePin, negativePin, speedPin, SENSITIVITY);
+EngineCC leftEngine(leftEnablePin, positivePin, negativePin, speedPin, (0 - 1) * SENSITIVITY);
+
+void setup(){
+  // Inicialize a comunicação com os pinos
+  leftEngine.setupPins();
+  rightEngine.setupPins();
+
+  // define o ponto máximo de cada motor
+  leftEngine.setEndEngageAngle(leftEngine.MIN);
+  rightEngine.setEndEngageAngle(rightEngine.MAX);
 }
 
-void loop() {
-  // Controle do carro
-  meuCarro.setSteeringAngle(true, 45);  // Gira o volante
-  meuCarro.adjustVelocity(false, 512);  // Ajusta a velocidade
-  meuCarro.performMovement();         // Executa o movimento
+void loop(){
+  int direction = analogRead(volantPin);
+
+  if (direction < MIN_VOLANT_DIRECTION){
+    // Transforma a direção em velocidade para o motor
+    leftEngine.setSteeringAngle(true, direction);
+    // Mantem a porta Inativa
+    rightEngine.setSteeringAngle(false);
+  }
+  else if (direction >= MAX_VOLANT_DIRECTION){
+    // Mantem a porta Inativa
+    leftEngine.setSteeringAngle(false);
+    // Transforma a direção em velocidade para o motor
+    rightEngine.setSteeringAngle(true, direction);
+  }
+
+  // Movimenta os motores
+  leftEngine.performMovement();
+  rightEngine.performMovement();
 }
 ```
 
