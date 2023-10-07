@@ -1,0 +1,27 @@
+ServoEngine			KEYWORD1
+setAutoSpeedPW			KEYWORD2
+setSignal			KEYWORD3
+setSpeed			KEYWORD4
+setBoost			KEYWORD5
+autoMove			KEYWORD6
+incrementAngle			KEYWORD7
+decrementAngle			KEYWORD8
+joystick			KEYWORD9
+calibrate			KEYWORD10
+getPw				KEYWORD11
+getPin				KEYWORD12
+getAngle			KEYWORD13
+getSpeed			KEYWORD14
+getCenter			KEYWORD15
+getId				KEYWORD16
+isMoving			KEYWORD17
+invertAxis			KEYWORD18
+setEngineId			KEYWORD19
+setComandAutoAcceleration	KEYWORD20
+getAcceleration			KEYWORD21
+writeAngle			KEYWORD22
+
+
+
+
+

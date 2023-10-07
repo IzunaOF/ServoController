@@ -1,0 +1,27 @@
+# Palavras-chave relacionadas à classe Recorder
+Recorder			KEYWORD1
+startRecording			KEYWORD2
+stopRecording			KEYWORD3
+recordStep			KEYWORD4
+recording			KEYWORD5
+executeSequence			KEYWORD6
+calibrateServos			KEYWORD7
+includeServo			KEYWORD8
+invertAxis			KEYWORD9
+calibrateEveryRound		KEYWORD10
+getIsRecording			KEYWORD11
+getIsStartRecording		KEYWORD12
+getIsRecord			KEYWORD13
+getIsExecute			KEYWORD14
+setExecuteSequenceState		KEYWORD15
+listening			KEYWORD16
+writeNextStep			KEYWORD17
+defaultMemory			KEYWORD18
+setServosComandAutoAcceleration	KEYWORD19
+setRecordButton			KEYWORD20
+setStartRecordingButton		KEYWORD21
+setExecuteButton		KEYWORD22
+calibrateEveryRound		KEYWORD23
+MEM_SIZE			KEYWORD24
+SERVO_LIST_SIZE			KEYWORD25
+
