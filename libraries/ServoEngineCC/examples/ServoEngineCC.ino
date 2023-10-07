@@ -7,41 +7,44 @@
 #define positivePin 6
 #define negativePin 9
 
-const int MIN_VOLANT_DIRECTION = 475;
-const int MAX_VOLANT_DIRECTION = 564;
-
+const int CENTER = 512
 const int SENSITIVITY = 50;
 
+// Defina o ponto em que o motor começara o movimento.
+const int MIN_VOLANT_DIRECTION = CENTER - SENSITIVITY;
+const int MAX_VOLANT_DIRECTION = CENTER + SENSITIVITY;
+
+// Crie os objetos
 EngineCC rightEngine(rightEnablePin, positivePin, negativePin, speedPin, SENSITIVITY);
 EngineCC leftEngine(leftEnablePin, positivePin, negativePin, speedPin, (0 - 1) * SENSITIVITY);
 
 void setup(){
+  // Inicialize a comunicação com os pinos
   leftEngine.setupPins();
   rightEngine.setupPins();
 
+  // define o ponto máximo de cada motor
   leftEngine.setEndEngageAngle(leftEngine.MIN);
   rightEngine.setEndEngageAngle(rightEngine.MAX);
 }
 
 void loop(){
-  istenEngines();
-}
-
-void listenEngines(){
   int direction = analogRead(volantPin);
 
   if (direction < MIN_VOLANT_DIRECTION){
+    // Transforma a direção em velocidade para o motor
     leftEngine.setSteeringAngle(true, direction);
+    // Mantem a porta Inativa
     rightEngine.setSteeringAngle(false);
   }
   else if (direction >= MAX_VOLANT_DIRECTION){
+    // Mantem a porta Inativa
     leftEngine.setSteeringAngle(false);
+    // Transforma a direção em velocidade para o motor
     rightEngine.setSteeringAngle(true, direction);
   }
-  moveEngines();
-}
 
-void moveEngines(){
+  // Movimenta os motores
   leftEngine.performMovement();
   rightEngine.performMovement();
 }

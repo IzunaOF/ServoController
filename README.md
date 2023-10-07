@@ -35,12 +35,12 @@ O programa lê a entrada do sensor do volante e controla os servos e motores de 
 
 ### Portas analógicas
 
-| Servo  | Nome da Porta  | Pin |
-| :----- | :------------- | :-: |
-| Base   | baseServoPin   | `A0`  |
-| Braço  | bracoServoPin  | `A1`  |
-| Altura | alturaServoPin | `A2`  |
-| Garra  | garraServoPin  | `A3`  |
+| Servo  | Nome da Porta  | Pin  |
+| :----- | :------------- | :--: |
+| Base   | baseServoPin   | `A0` |
+| Braço  | bracoServoPin  | `A1` |
+| Altura | alturaServoPin | `A2` |
+| Garra  | garraServoPin  | `A3` |
 
 ### Portas digitais:
 
@@ -60,14 +60,14 @@ O programa lê a entrada do sensor do volante e controla os servos e motores de 
 
 #### Pinos:
 
-| Nome           | Pin |
-| :------------- | :-: |
-| positivePin    |  6  |
-| negativePin    |  9  |
-| speedPin       | `A0`  |
-| volantPin      | `A1`  |
-| rightEnablePin |  3  |
-| leftEnablePin  |  5  |
+| Nome           | Pin  |
+| :------------- | :--: |
+| positivePin    |  6   |
+| negativePin    |  9   |
+| speedPin       | `A0` |
+| volantPin      | `A1` |
+| rightEnablePin |  3   |
+| leftEnablePin  |  5   |
 
 #### Botões:
 
@@ -157,22 +157,33 @@ SvRecorder(int recButton, int startRecButton, int executeButton)
 ## Exemplo de uso:
 
 ```cpp
-#include "ServoRecorder.h"
-#include "ServoEngine.h"
+#include <ServoEngine.h>
+#include <ServoRecorder.h>
 
-SvRecorder recorder(BTN_RECORD, BTN_START_RECORD, BTN_EXECUTE);
+#define BTN_START_RECORD 2
+#define BTN_RECORD 12
+#define BTN_EXECUTE 7
 
-//Utilize o valor Interno da classe SERVO_LIST_SIZE para garantir o tamanho correto da lista dos motores
+SvRecorder rec(BTN_RECORD, BTN_START_RECORD, BTN_EXECUTE);
 
-SvEngine servos[recorder.SERVO_LIST_SIZE];  // Crie um array de objetos da classe SvEngine com os servos desejados
+void setup()
+{
+  SvEngine base(1, 3, A0);
+  SvEngine braco(2, 5, A1);
+  SvEngine altura(3, 6, A2);
+  SvEngine garra(4, 9, A3, 90, 30, 150);
 
-void setup() {
-  // Inicializações
-  recorder.includeServo(servos);  // Inclui os servos no gravador
+  SvEngine servos[rec.SERVO_LIST_SIZE] = {braco, altura, base, garra};
+
+  garra.setBoost(5);
+
+  rec.includeServo(servos);
+  rec.calibrateEveryRound(true);
+  rec.invertAxis(2);
+  rec.invertAxis(3);
 }
-
-void loop() {
-  recorder.listening();  // Monitora os botões e executa a lógica de gravação e execução
+void loop(){
+  rec.listening();
 }
 ```
 
@@ -231,18 +242,38 @@ SvEngine(int engineId, int pin, int pw, int center, int min, int max, int maxRPM
 ### Exemplo de uso:
 
 ```cpp
-Copy code
-#include "ServoEngine.h"
+#include <ServoEngine.h>
 
-SvEngine meuMotor(1, 9, A0, 90, 0, 180);
+const int changeState = 2;
+bool state = false;
 
-void setup() {
-  // Inicializações
+// Crie um objeto SvEngine
+SvEngine myEngine(1, 3, A0, 90);
+SvEngine myEngine2(2, 5, A1, 90, 45, 135);
+
+SvEngine engines[2] = {myEngine, myEngine2};
+void setup(){
+  // Inicializa o motor
+  for (size_t i = 0; i < sizeof(engines) / sizeof(engines[0]); i++){
+    engines[i].setSignal();                // isso é necessário para que o motor se vincule ao pino de leitura;
+    engines[i].setAutoSpeedPW(autoPotPin); // define o pino para o movimento automatico, opcional;
+    engines[i].setSpeed();                 // Configura a velocidade inicial do motor
+    engines[i].setBoost(5);                // Aumenta a velocidade de movimento, inclua somente se quiser que o motor se torne mais veloz
+  }
 }
 
-void loop() {
-  // Controle do motor
-  meuMotor.joystick();
+void loop(){
+  // troca o modo de controle do motor
+  toggleState();
+  if (state)
+    myEngine.autoMove(newAngle);
+  else
+    myEngine.joystick();
+}
+
+void toggleState(){
+  if (changeState)
+    state = !state;
 }
 ```
 
@@ -281,27 +312,75 @@ EngineCC(int enable, int positive, int negative, int potentiometer, int sensibil
 - `readAcceleration()`: _Lê a aceleração do motor._
 - `setMotorDirection(int pos, int neg)`: _Configura a direção do motor._
 - `adjustVelocity(bool neutral, int acceleration)`: _Ajusta a velocidade do motor._
-- `writeAngle(int value)`: _Escreve um ângulo específico._
 - `performMovement()`: _Executa o movimento do carro._
 - `setEndEngageAngle(int value)`: _Define o ângulo de engajamento final._
-- `setEngageAngle(int value)`: _Define o ângulo de engajamento._
 
 ### Exemplo de uso:
 
 ```cpp
-#include "ServoEngineCC.h"
+EngineCC(int enable, int positive, int negative, int potentiometer, int sensibility, int center, int offSet)
+```
 
-EngineCC meuCarro(9, 10, 11, A0, 50);
+- `setupPins()`: _Configura as pinagens dos motores._
+- `setSteeringAngle(bool rotateClockwise, int angle)`: _Define o ângulo de direção do volante._
+- `readAcceleration()`: _Lê a aceleração do motor._
+- `setMotorDirection(int pos, int neg)`: _Configura a direção do motor._
+- `adjustVelocity(bool neutral, int acceleration)`: _Ajusta a velocidade do motor._
+- `performMovement()`: _Executa o movimento do carro._
+- `setEndEngageAngle(int value)`: _Define o ângulo de engajamento final._
 
-void setup() {
-  // Inicializações
+### Exemplo de uso:
+
+```cpp
+#include <ServoEngineCC.h>
+
+#define speedPin A0
+#define volantPin A1
+#define rightEnablePin 3
+#define leftEnablePin 5
+#define positivePin 6
+#define negativePin 9
+
+const int CENTER = 512
+const int SENSITIVITY = 50;
+
+// Defina o ponto em que o motor começara o movimento.
+const int MIN_VOLANT_DIRECTION = CENTER - SENSITIVITY;
+const int MAX_VOLANT_DIRECTION = CENTER + SENSITIVITY;
+
+// Crie os objetos
+EngineCC rightEngine(rightEnablePin, positivePin, negativePin, speedPin, SENSITIVITY);
+EngineCC leftEngine(leftEnablePin, positivePin, negativePin, speedPin, (0 - 1) * SENSITIVITY);
+
+void setup(){
+  // Inicialize a comunicação com os pinos
+  leftEngine.setupPins();
+  rightEngine.setupPins();
+
+  // define o ponto máximo de cada motor
+  leftEngine.setEndEngageAngle(leftEngine.MIN);
+  rightEngine.setEndEngageAngle(rightEngine.MAX);
 }
 
-void loop() {
-  // Controle do carro
-  meuCarro.setSteeringAngle(true, 45);  // Gira o volante
-  meuCarro.adjustVelocity(false, 512);  // Ajusta a velocidade
-  meuCarro.performMovement();         // Executa o movimento
+void loop(){
+  int direction = analogRead(volantPin);
+
+  if (direction < MIN_VOLANT_DIRECTION){
+    // Transforma a direção em velocidade para o motor
+    leftEngine.setSteeringAngle(true, direction);
+    // Mantem a porta Inativa
+    rightEngine.setSteeringAngle(false);
+  }
+  else if (direction >= MAX_VOLANT_DIRECTION){
+    // Mantem a porta Inativa
+    leftEngine.setSteeringAngle(false);
+    // Transforma a direção em velocidade para o motor
+    rightEngine.setSteeringAngle(true, direction);
+  }
+
+  // Movimenta os motores
+  leftEngine.performMovement();
+  rightEngine.performMovement();
 }
 ```
 
